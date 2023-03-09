@@ -25,45 +25,45 @@ public class ReplyService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public ReplyResponseDto createReply(Long id, ReplyRequestDto requestDto, HttpServletRequest request) {
+    public ReplyResponseDto createReply(Long postId, ReplyRequestDto requestDto, HttpServletRequest request) {
         User user = jwtUtil.getUser(request); // 토큰이 있는 경우 사용자의 정보를 받아온다.
-        Post post = getPost(id);  // 게시글이 존재하는지 확인 후 가져온다
+        Post post = getPost(postId);  // 게시글이 존재하는지 확인 후 가져온다
         Reply reply = replyRepository.saveAndFlush(new Reply(requestDto.getReply(), user, post));
         return new ReplyResponseDto(reply, user.getUsername());
     }
 
     @Transactional
-    public ReplyResponseDto update(Long id, ReplyRequestDto replyRequestDto, HttpServletRequest request) {
+    public ReplyResponseDto update(Long replyId, ReplyRequestDto replyRequestDto, HttpServletRequest request) {
         User user = jwtUtil.getUser(request); // 토큰이 있는 경우 사용자의 정보를 받아온다.
-        Reply reply = getReply(id); // 댓글이 존재하는지 확인 후 가져온다.
-        checkReplyRole(id, user);  // 권한을 확인한다 (자신이 쓴 댓글인지 확인)
+        Reply reply = getReply(replyId); // 댓글이 존재하는지 확인 후 가져온다.
+        checkReplyRole(replyId, user);  // 권한을 확인한다 (자신이 쓴 댓글인지 확인)
         reply.update(replyRequestDto);
         return new ReplyResponseDto(reply, user.getUsername());
     }
 
     @Transactional
-    public ResponseEntity<String> delete(Long id, HttpServletRequest request) {
+    public ResponseEntity<String> delete(Long replyId, HttpServletRequest request) {
         User user = jwtUtil.getUser(request);      // 토큰이 있는 경우 사용자의 정보를 받아온다.
-        getReply(id); // 댓글이 존재하는지 확인 후 가져온다.
-        checkReplyRole(id, user);  // 권한을 확인한다 (자신이 쓴 댓글인지 확인)
-        replyRepository.deleteById(id);
+        getReply(replyId); // 댓글이 존재하는지 확인 후 가져온다.
+        checkReplyRole(replyId, user);  // 권한을 확인한다 (자신이 쓴 댓글인지 확인)
+        replyRepository.deleteById(replyId);
         return ResponseEntity.status(HttpStatus.OK).body("댓글 삭제 완료");
     }
 
-    private Reply getReply(Long id){
-        return replyRepository.findById(id).orElseThrow(
+    private Reply getReply(Long replyId){
+        return replyRepository.findById(replyId).orElseThrow(
                 () -> new IllegalArgumentException("댓글이 존재하지 않습니다.")
         );
     }
 
-    private Post getPost(Long id) {
-        return postRepository.findById(id).orElseThrow(
+    private Post getPost(Long postId) {
+        return postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
     }
-    private void checkReplyRole(Long id, User user) {
+    private void checkReplyRole(Long replyId, User user) {
         if (user.getRole() == UserRoleEnum.ADMIN) return;
-        replyRepository.findByIdAndUser(id, user).orElseThrow(
+        replyRepository.findByIdAndUser(replyId, user).orElseThrow(
                 () -> new IllegalArgumentException("권한이 없습니다.")
         );
     }

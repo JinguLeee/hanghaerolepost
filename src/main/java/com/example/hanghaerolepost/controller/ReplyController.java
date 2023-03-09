@@ -3,6 +3,7 @@ package com.example.hanghaerolepost.controller;
 import com.example.hanghaerolepost.dto.ReplyRequestDto;
 import com.example.hanghaerolepost.dto.ReplyResponseDto;
 import com.example.hanghaerolepost.service.ReplyService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,21 +16,21 @@ import javax.servlet.http.HttpServletRequest;
 public class ReplyController {
     private final ReplyService replyService;
 
-    // 게시글 번호
-    @PostMapping("/{id}")
-    public ReplyResponseDto createReply(@PathVariable Long id, @RequestBody ReplyRequestDto replyRequestDto, HttpServletRequest request) {
-        return replyService.createReply(id, replyRequestDto, request);
+    @ApiOperation(value = "댓글 등록", notes = "게시글의 댓글을 등록한다.")
+    @PostMapping("/{postId}")
+    public ReplyResponseDto createReply(@PathVariable Long postId, @RequestBody ReplyRequestDto replyRequestDto, HttpServletRequest request) {
+        return replyService.createReply(postId, replyRequestDto, request);
     }
 
-    // 댓글 번호
-    @PutMapping("/{id}")
-    public ReplyResponseDto updateReply(@PathVariable Long id, @RequestBody ReplyRequestDto replyRequestDto, HttpServletRequest request) {
-        return replyService.update(id, replyRequestDto, request);
+    @ApiOperation(value = "댓글 수정", notes = "자신이 쓴 댓글 중 선택한 댓글을 수정한다.")
+    @PutMapping("/{replyId}")
+    public ReplyResponseDto updateReply(@PathVariable Long replyId, @RequestBody ReplyRequestDto replyRequestDto, HttpServletRequest request) {
+        return replyService.update(replyId, replyRequestDto, request);
     }
 
-    // 댓글 번호
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteReply(@PathVariable Long id, HttpServletRequest request) {
-        return replyService.delete(id, request);
+    @ApiOperation(value = "댓글 삭제", notes = "자신이 쓴 댓글 중 선택한 댓글을 삭제한다.")
+    @DeleteMapping("/{replyId}")
+    public ResponseEntity<String> deleteReply(@PathVariable Long replyId, HttpServletRequest request) {
+        return replyService.delete(replyId, request);
     }
 }
