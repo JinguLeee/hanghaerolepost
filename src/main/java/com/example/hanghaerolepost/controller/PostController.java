@@ -26,18 +26,18 @@ public class PostController {
         return postService.getPost();
     }
 
-    @GetMapping("/{id}")
-    public PostResponseDto getDetail(@PathVariable Long id) {
-        return postService.getOnePost(id);
+    @GetMapping("/{postId}")
+    public PostResponseDto getDetail(@PathVariable Long postId) {
+        return postService.getOnePost(postId);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updatePost (@PathVariable Long id, @RequestBody PostRequestDto postRequestDto, HttpServletRequest request) {
-        return postService.update(id, postRequestDto, request);
+    @PutMapping("/{postId}")
+    public PostResponseDto updatePost (@PathVariable Long postId, @RequestBody PostRequestDto postRequestDto, HttpServletRequest request) {
+        return postService.update(postId, postRequestDto, request);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePost(@PathVariable Long id, HttpServletRequest request) {
-        return postService.delete(id, request);
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<String> deletePost(@PathVariable Long postId, HttpServletRequest request) {
+        return postService.delete(postId, request);
     }
 }

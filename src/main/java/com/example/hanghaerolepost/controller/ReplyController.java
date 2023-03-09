@@ -23,7 +23,7 @@ public class ReplyController {
 
     // 댓글 번호
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateReply(@PathVariable Long id, @RequestBody ReplyRequestDto replyRequestDto, HttpServletRequest request) {
+    public ReplyResponseDto updateReply(@PathVariable Long id, @RequestBody ReplyRequestDto replyRequestDto, HttpServletRequest request) {
         return replyService.update(id, replyRequestDto, request);
     }
 

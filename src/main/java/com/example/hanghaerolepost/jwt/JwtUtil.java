@@ -89,7 +89,7 @@ public class JwtUtil {
         String token = resolveToken(request);
         Claims claims;
 
-        if (token == null) return null;
+        if (token == null) throw new IllegalArgumentException("Token Error");
 
         // 토큰이 있는 경우에만 가능
         if (validateToken(token)) {

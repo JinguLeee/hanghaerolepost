@@ -3,7 +3,6 @@ package com.example.hanghaerolepost.service;
 import com.example.hanghaerolepost.dto.LoginRequestDto;
 import com.example.hanghaerolepost.dto.SignupRequestDto;
 import com.example.hanghaerolepost.entity.User;
-import com.example.hanghaerolepost.entity.UserRoleEnum;
 import com.example.hanghaerolepost.jwt.JwtUtil;
 import com.example.hanghaerolepost.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,33 +21,27 @@ public class UserService {
 
     public ResponseEntity<String> signup(SignupRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
-        String password = signupRequestDto.getPassword();
-        UserRoleEnum role = signupRequestDto.getRole();
 
         // 회원 중복 확인
         userRepository.findByUsername(username).ifPresent(it -> {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         });
 
-        User user = new User(username, password, role);
-        userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.OK).body("회원가입 완료");
+        userRepository.save(new User(username, signupRequestDto.getPassword(), signupRequestDto.getRole()));
+        return ResponseEntity.status(HttpStatus.OK).body("회원가입 성공");
     }
 
-    public ResponseEntity<String> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
-        String username = loginRequestDto.getUsername();
-        String password = loginRequestDto.getPassword();
-
+    public ResponseEntity<String>  login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         // 사용자 확인
-        User user = userRepository.findByUsername(username).orElseThrow(
+        User user = userRepository.findByUsername(loginRequestDto.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
         );
         // 비밀번호 확인
-        if(!user.getPassword().equals(password)){
+        if(!user.getPassword().equals(loginRequestDto.getPassword())){
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getRole()));
-        return ResponseEntity.status(HttpStatus.OK).body("로그인 완료");
+        return ResponseEntity.status(HttpStatus.OK).body("로그인 성공");
     }
 }
