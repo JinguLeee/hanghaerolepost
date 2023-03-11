@@ -31,12 +31,7 @@ public class PostResponseDto {
     }
 
     public PostResponseDto(Post post, List<ReplyResponseDto> replyList) {
-        this.id = post.getId();
-        this.username = post.getUser().getUsername();
-        this.title = post.getTitle();
-        this.contents = post.getContents();
-        this.createdAt = post.getCreatedAt();
-        this.modifiedAt = post.getModifiedAt();
+        this(post);
         this.replyList = replyList;
     }
 }

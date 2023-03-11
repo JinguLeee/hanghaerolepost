@@ -24,10 +24,7 @@ public class ReplyResponseDto {
     }
 
     public ReplyResponseDto(Reply reply, String username) {
-        this.id = reply.getId();
-        this.reply = reply.getReply();
-        this.createdAt = reply.getCreatedAt();
-        this.modifiedAt = reply.getModifiedAt();
+        this(reply);
         this.username = username;
     }
 

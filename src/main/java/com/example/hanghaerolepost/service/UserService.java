@@ -31,7 +31,7 @@ public class UserService {
         return ResponseEntity.status(HttpStatus.OK).body("회원가입 성공");
     }
 
-    public ResponseEntity<String>  login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public ResponseEntity<String> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         // 사용자 확인
         User user = userRepository.findByUsername(loginRequestDto.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
