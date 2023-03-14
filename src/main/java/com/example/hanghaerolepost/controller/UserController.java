@@ -1,5 +1,6 @@
 package com.example.hanghaerolepost.controller;
 
+import com.example.hanghaerolepost.Exception.RestApiException;
 import com.example.hanghaerolepost.dto.LoginRequestDto;
 import com.example.hanghaerolepost.dto.SignupRequestDto;
 import com.example.hanghaerolepost.service.UserService;
@@ -27,7 +28,14 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody @Valid SignupRequestDto signupRequestDto, BindingResult result) {
         if (result.hasErrors()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result.getFieldError().getDefaultMessage());
+            RestApiException restApiException = new RestApiException();
+            restApiException.setHttpStatus(HttpStatus.BAD_REQUEST);
+            restApiException.setErrorMessage(result.getFieldError().getDefaultMessage());
+
+            return new ResponseEntity(
+                    restApiException,
+                    HttpStatus.BAD_REQUEST
+            );
         }
         return userService.signup(signupRequestDto);
     }

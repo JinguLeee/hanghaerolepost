@@ -76,7 +76,7 @@ public class JwtUtil {
         } catch (IllegalArgumentException e) {
             log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
         }
-        return false;
+        throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
     }
 
     // 토큰에서 사용자 정보 가져오기
@@ -89,7 +89,7 @@ public class JwtUtil {
         String token = resolveToken(request);
         Claims claims;
 
-        if (token == null) throw new IllegalArgumentException("Token Error");
+        if (token == null) throw new IllegalArgumentException("로그인을 해주세요.");
 
         // 토큰이 있는 경우에만 가능
         if (validateToken(token)) {
